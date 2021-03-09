@@ -46,10 +46,14 @@ class Compressor(object):
 
     @property
     def js_compressor(self):
+        if not settings.PIPELINE_ENABLED:
+            return NoopCompressor
         return to_class(settings.JS_COMPRESSOR)
 
     @property
     def css_compressor(self):
+        if not settings.PIPELINE_ENABLED:
+            return NoopCompressor
         return to_class(settings.CSS_COMPRESSOR)
 
     def compress_js(self, paths, templates=None, **kwargs):
