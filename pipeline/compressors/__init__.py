@@ -20,17 +20,7 @@ NON_REWRITABLE_URL = re.compile(r'^(#|http:|https:|data:|//)')
 DEFAULT_TEMPLATE_FUNC = "template"
 TEMPLATE_FUNC = r"""var template = function(str){var fn = new Function('obj', 'var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push(\''+str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/<%=([\s\S]+?)%>/g,function(match,code){return "',"+code.replace(/\\'/g, "'")+",'";}).replace(/<%([\s\S]+?)%>/g,function(match,code){return "');"+code.replace(/\\'/g, "'").replace(/[\r\n\t]/g,' ')+"__p.push('";}).replace(/\r/g,'\\r').replace(/\n/g,'\\n').replace(/\t/g,'\\t')+"');}return __p.join('');");return fn;};"""
 
-MIME_TYPES = {
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.jpeg': 'image/jpeg',
-    '.gif': 'image/gif',
-    '.tif': 'image/tiff',
-    '.tiff': 'image/tiff',
-    '.ttf': 'font/truetype',
-    '.otf': 'font/opentype',
-    '.woff': 'font/woff'
-}
+MIME_TYPES = settings.EMBED_MIME_TYPES
 EMBED_EXTS = MIME_TYPES.keys()
 FONT_EXTS = ['.ttf', '.otf', '.woff']
 

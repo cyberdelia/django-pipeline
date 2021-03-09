@@ -83,6 +83,17 @@ DEFAULTS = {
 
     'EMBED_MAX_IMAGE_SIZE': 32700,
     'EMBED_PATH': r'[/]?embed/',
+    'EMBED_MIME_TYPES': {
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.tif': 'image/tiff',
+        '.tiff': 'image/tiff',
+        '.ttf': 'font/truetype',
+        '.otf': 'font/opentype',
+        '.woff': 'font/woff'
+    },
 }
 
 
