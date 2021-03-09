@@ -314,3 +314,15 @@ Add it to your settings ::
 
   PIPELINE['CSS_COMPRESSOR'] = 'jam.compressors.JamCompressor'
   PIPELINE['JS_COMPRESSOR'] = 'jam.compressors.JamCompressor'
+
+
+Use Shell to run compressor binary (Windows)
+============================================
+
+If you have a compressor binary such as Yuglify installed globally using NPM on windows, you can enable ``'USE_SHELL'``,
+that way it just searches your PATH.
+
+Then in your settings you could use: ::
+
+  PIPELINE['USE_SHELL'] = True
+  PIPELINE['YUGLIFY_BINARY']: 'yuglify'
