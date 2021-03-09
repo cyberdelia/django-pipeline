@@ -6,6 +6,10 @@ from django.conf import settings as _settings
 from django.core.signals import setting_changed
 from django.dispatch import receiver
 
+if getattr(_settings, "PIPELINE_SETTING_NAME", ""):
+    setting_name = getattr(_settings, "PIPELINE_SETTING_NAME")
+else:
+    setting_name = "PIPELINE"
 
 DEFAULTS = {
     'PIPELINE_ENABLED': not _settings.DEBUG,
@@ -118,10 +122,10 @@ class PipelineSettings(MutableMapping):
         return self.__getitem__(name)
 
 
-settings = PipelineSettings(_settings.PIPELINE)
+settings = PipelineSettings(getattr(_settings, setting_name))
 
 
 @receiver(setting_changed)
 def reload_settings(**kwargs):
-    if kwargs['setting'] == 'PIPELINE':
+    if kwargs['setting'] == setting_name:
         settings.update(kwargs['value'])
