@@ -113,8 +113,12 @@ class Packager(object):
             compiler_options=package.compiler_options,
             force=True,
         )
-        content = compress(paths, **kwargs)
-        self.save_file(output_filename, content)
+        output_path = self.storage.path(output_filename)
+        output_mtime = self.storage.get_modified_time(output_path)
+        if any([self.storage.get_modified_time(self.storage.path(path)) >=
+                output_mtime for path in paths]):
+            content = compress(paths, **kwargs)
+            self.save_file(output_filename, content)
         signal.send(sender=self, package=package, **kwargs)
         return output_filename
 
