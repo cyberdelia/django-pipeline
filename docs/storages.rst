@@ -39,6 +39,9 @@ that allows staticfiles to locate your outputted assets : ::
 If you use ``PipelineCachedStorage`` you may also like the ``CachedFileFinder``,
 which allows you to use integration tests with cached file URLs.
 
+Keep in mind that ``PipelineCachedStorage`` is only available for Django versions
+before 3.1.
+
 If you want to exclude Pipelinable content from your collected static files,
 you can also use Pipeline's ``FileSystemFinder`` and ``AppDirectoriesFinder``.
 These finders will also exclude `unwanted` content like READMEs, tests and
