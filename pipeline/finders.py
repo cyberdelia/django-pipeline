@@ -95,6 +95,7 @@ class FileSystemFinder(PatternFilterMixin, DjangoFileSystemFinder):
     ignore_patterns = [
         '*.js',
         '*.css',
+        '*.json',
         '*.less',
         '*.scss',
         '*.styl',
@@ -116,4 +117,5 @@ class FileSystemFinder(PatternFilterMixin, DjangoFileSystemFinder):
         'Makefile*',
         'Gemfile*',
         'node_modules',
+        'bower_components',
     ]
