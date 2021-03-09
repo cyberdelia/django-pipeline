@@ -140,7 +140,47 @@ PIPELINE = {
                 'async': True,
                 'defer': True,
             }
-        }
+        },
+        'scripts_crossorigin': {
+            'source_filenames': (
+                'pipeline/js/first.js',
+                'pipeline/js/second.js',
+                'pipeline/js/application.js',
+                'pipeline/templates/**/*.jst'
+            ),
+            'output_filename': 'scripts_crossorigin.js',
+            "crossorigin": "anonymous",
+        },
+        'scripts_sri_sha256': {
+            'source_filenames': (
+                'pipeline/js/first.js',
+                'pipeline/js/second.js',
+                'pipeline/js/application.js',
+                'pipeline/templates/**/*.jst'
+            ),
+            'output_filename': 'scripts_sha256.js',
+            "integrity": "sha256"
+        },
+        'scripts_sri_sha384': {
+            'source_filenames': (
+                'pipeline/js/first.js',
+                'pipeline/js/second.js',
+                'pipeline/js/application.js',
+                'pipeline/templates/**/*.jst'
+            ),
+            'output_filename': 'scripts_sha384.js',
+            "integrity": "sha384"
+        },
+        'scripts_sri_sha512': {
+            'source_filenames': (
+                'pipeline/js/first.js',
+                'pipeline/js/second.js',
+                'pipeline/js/application.js',
+                'pipeline/templates/**/*.jst'
+            ),
+            'output_filename': 'scripts_sha512.js',
+            "integrity": "sha512"
+        },
     }
 }
 

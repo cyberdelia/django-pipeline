@@ -60,7 +60,9 @@ class PipelineExtension(PipelineMixin, Extension):
         context = package.extra_context
         context.update({
             'type': guess_type(path, 'text/javascript'),
-            'url': staticfiles_storage.url(path)
+            'url': staticfiles_storage.url(path),
+            "crossorigin": package.config.get("crossorigin"),
+            "integrity": package.get_sri(path),
         })
         template = self.environment.get_template(template_name)
         return template.render(context)
