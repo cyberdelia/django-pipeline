@@ -1,5 +1,5 @@
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.contrib.staticfiles.finders import find
+from django.contrib.staticfiles.finders import get_finders, find
 from django.core.files.base import ContentFile
 from django.utils.encoding import smart_bytes
 
@@ -98,11 +98,25 @@ class Packager(object):
                          variant=package.variant, **kwargs)
 
     def compile(self, paths, compiler_options={}, force=False):
-        return self.compiler.compile(
+        paths = self.compiler.compile(
             paths,
             compiler_options=compiler_options,
             force=force,
         )
+        for path in paths:
+            if not self.storage.exists(path):
+                if self.verbose:
+                    print("Compiled file '%s' cannot be found with packager's storage. Locating it." % path)
+
+                source_storage = self.find_source_storage(path)
+                if source_storage is not None:
+                    with source_storage.open(path) as source_file:
+                        if self.verbose:
+                            print("Saving: %s" % path)
+                        self.storage.save(path, source_file)
+                else:
+                    raise IOError("File does not exist: %s" % path)
+        return paths
 
     def pack(self, package, compress, signal, **kwargs):
         output_filename = package.output_filename
@@ -126,6 +140,15 @@ class Packager(object):
 
     def save_file(self, path, content):
         return self.storage.save(path, ContentFile(smart_bytes(content)))
+
+    def find_source_storage(self, path):
+        for finder in get_finders():
+            for short_path, storage in finder.list(''):
+                if short_path == path:
+                    if self.verbose:
+                        print("Found storage: %s" % str(self.storage))
+                    return storage
+        return None
 
     def create_packages(self, config):
         packages = {}
