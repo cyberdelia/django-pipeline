@@ -39,6 +39,9 @@ class Compiler(object):
                                           outdated=outdated, force=force,
                                           **compiler_options)
 
+                    if getattr(self.storage, 'file_permissions_mode', None) is not None:
+                        os.chmod(outfile, self.storage.file_permissions_mode)
+
                     return compiler.output_path(input_path, compiler.output_extension)
             else:
                 return input_path
