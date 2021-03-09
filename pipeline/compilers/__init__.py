@@ -1,7 +1,5 @@
 import os
-import shutil
 import subprocess
-from tempfile import NamedTemporaryFile
 
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import staticfiles_storage
@@ -114,37 +112,25 @@ class SubProcessCompiler(CompilerBase):
         # The first element in argument_list is the program that will be executed; if it is '', then
         # a PermissionError will be raised. Thus empty arguments are filtered out from argument_list
         argument_list = list(filter(None, argument_list))
-        stdout = None
         try:
-            # We always catch stdout in a file, but we may not have a use for it.
-            temp_file_container = cwd or os.path.dirname(stdout_captured or "") or os.getcwd()
-            with NamedTemporaryFile('wb', delete=False, dir=temp_file_container) as stdout:
-                compiling = subprocess.Popen(argument_list, cwd=cwd,
-                                             stdout=stdout,
-                                             stderr=subprocess.PIPE)
-                _, stderr = compiling.communicate()
-                set_std_streams_blocking()
-
-            if compiling.returncode != 0:
-                stdout_captured = None  # Don't save erroneous result.
-                raise CompilerError(
-                    f"{argument_list!r} exit code {compiling.returncode}\n{stderr}",
-                    command=argument_list,
-                    error_output=stderr)
+            compiling = subprocess.run(
+                argument_list, cwd=cwd, check=True,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+            set_std_streams_blocking()
 
             # User wants to see everything that happened.
             if self.verbose:
-                with open(stdout.name, 'rb') as out:
-                    print(out.read())
-                print(stderr)
+                print(compiling.stdout)
+                print(compiling.stderr)
         except OSError as e:
-            stdout_captured = None  # Don't save erroneous result.
-            raise CompilerError(e, command=argument_list,
-                                error_output=str(e))
-        finally:
-            # Decide what to do with captured stdout.
-            if stdout:
-                if stdout_captured:
-                    shutil.move(stdout.name, os.path.join(cwd or os.curdir, stdout_captured))
-                else:
-                    os.remove(stdout.name)
+            raise CompilerError(e, command=argument_list, error_output=str(e))
+        except subprocess.CalledProcessError as e:
+            raise CompilerError(
+                f"{argument_list!r} exit code {e.returncode}\n{e.stderr}",
+                command=e.cmd, error_output=e.stderr
+            )
+        else:
+            if stdout_captured:
+                with open(os.path.join(cwd or os.curdir, stdout_captured), 'wb') as f:
+                    f.write(compiling.stdout)
