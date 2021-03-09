@@ -9,7 +9,7 @@ class PackageNotFound(PipelineException):
 
 
 class CompilerError(PipelineException):
-    def __init__(self, msg, command=None, error_output=None):
+    def __init__(self, msg, command=None, error_output=''):
         super(CompilerError, self).__init__(msg)
 
         self.command = command
