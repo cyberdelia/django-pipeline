@@ -105,6 +105,10 @@ class Compressor:
     def css_compressor(self):
         return to_class(settings.CSS_COMPRESSOR)
 
+    @property
+    def html_compressor(self):
+        return to_class(settings.HTML_COMPRESSOR)
+
     def compress_js(
         self,
         paths: Sequence[str],
@@ -156,6 +160,13 @@ class Compressor:
             return self.with_data_uri(css)
         else:
             raise CompressorError(f'"{variant}" is not a valid variant')
+
+    def compress_html(self, html, **kwargs):
+        """Minify HTML response"""
+        compressor = self.html_compressor
+        if compressor:
+            html = getattr(compressor(verbose=self.verbose), "compress_html")(html)
+        return html
 
     def compile_templates(self, paths):
         compiled = []
@@ -441,3 +452,6 @@ class NoopCompressor(CompressorBase):
 
     def compress_css(self, css):
         return css
+
+    def compress_html(self, html):
+        return html

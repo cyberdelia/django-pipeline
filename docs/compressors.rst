@@ -241,7 +241,7 @@ css-html-js-minify compressor
 =============================
 
 The css-html-js-minify is full Python compressor using `css-html-js-minify <https://github.com/ciotto/css-html-js-minify>`_
-for compressing javascript and stylesheets.
+for compressing javascript, stylesheets and HTML.
 
 To use it for your stylesheets add this to your ``PIPELINE['CSS_COMPRESSOR']`` ::
 
@@ -251,9 +251,47 @@ To use it for your javascripts add this to your ``PIPELINE['JS_COMPRESSOR']`` ::
 
   PIPELINE['JS_COMPRESSOR'] = 'pipeline.compressors.csshtmljsminify.CssHtmlJsMinifyCompressor'
 
+To use it for your HTML add this to your ``PIPELINE['HTML_COMPRESSOR']`` ::
+
+  PIPELINE['HTML_COMPRESSOR'] = 'pipeline.compressors.csshtmljsminify.CssHtmlJsMinifyCompressor'
+
 Install the css-html-js-minify library with your favorite Python package manager ::
 
   pip install css-html-js-minify
+
+
+minify-html compressor
+======================
+
+The minify-html is a Rust HTML minifier with binding to Python
+`minify-html <https://github.com/wilsonzlin/minify-html>`_
+for compressing HTML.
+
+To use it for your HTML add this to your ``PIPELINE['HTML_COMPRESSOR']`` ::
+
+  PIPELINE['HTML_COMPRESSOR'] = 'pipeline.compressors.minifyhtml.MinifyHtmlCompressor'
+
+Install the minify-html library with your favorite Python package manager ::
+
+  pip install minify-html
+
+``MINIFYHTML_PARAMS``
+---------------------
+
+Additional parameters to use when ``minify_html.minify()`` is called.
+
+Defaults to ``{'do_not_minify_doctype': True, 'ensure_spec_compliant_unquoted_attribute_values': True, 'keep_spaces_between_attributes': True, 'minify_css': True, 'minify_js': True}``
+
+
+Django HTML compressor
+======================
+
+Django's ``strip_spaces_between_tags()`` from ``django.utils.html`` to simply
+strip spaces between HTML tags.
+
+To use it for your HTML add this to your ``PIPELINE['HTML_COMPRESSOR']`` ::
+
+  PIPELINE['HTML_COMPRESSOR'] = 'pipeline.compressors.djangohtml.DjangoHtmlCompressor'
 
 
 No-Op Compressors
@@ -266,6 +304,7 @@ To use it, add this to your settings ::
 
   PIPELINE['CSS_COMPRESSOR'] = 'pipeline.compressors.NoopCompressor'
   PIPELINE['JS_COMPRESSOR'] = 'pipeline.compressors.NoopCompressor'
+  PIPELINE['HTML_COMPRESSOR'] = 'pipeline.compressors.NoopCompressor'
 
 
 Write your own compressor class

@@ -14,6 +14,7 @@ DEFAULTS = {
     "SHOW_ERRORS_INLINE": _settings.DEBUG,
     "CSS_COMPRESSOR": "pipeline.compressors.yuglify.YuglifyCompressor",
     "JS_COMPRESSOR": "pipeline.compressors.yuglify.YuglifyCompressor",
+    "HTML_COMPRESSOR": "pipeline.compressors.djangohtml.DjangoHtmlCompressor",
     "COMPILERS": [],
     "STYLESHEETS": {},
     "JAVASCRIPT": {},
@@ -53,6 +54,13 @@ DEFAULTS = {
     "STYLUS_ARGUMENTS": "",
     "LESS_BINARY": "/usr/bin/env lessc",
     "LESS_ARGUMENTS": "",
+    "MINIFYHTML_PARAMS": {
+        "do_not_minify_doctype": True,
+        "ensure_spec_compliant_unquoted_attribute_values": True,
+        "keep_spaces_between_attributes": True,
+        "minify_css": True,
+        "minify_js": True,
+    },
     "MIMETYPES": (
         (("text/coffeescript"), (".coffee")),
         (("text/less"), (".less")),

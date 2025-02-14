@@ -1,8 +1,9 @@
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import MiddlewareNotUsed
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.encoding import DjangoUnicodeDecodeError
-from django.utils.html import strip_spaces_between_tags as minify_html
 
+from pipeline.compressors import Compressor
 from pipeline.conf import settings
 
 
@@ -17,8 +18,11 @@ class MinifyHTMLMiddleware(MiddlewareMixin):
             response.has_header("Content-Type")
             and "text/html" in response["Content-Type"]
         ):
+            compressor = Compressor(storage=staticfiles_storage, verbose=False)
             try:
-                response.content = minify_html(response.content.decode("utf-8").strip())
+                response.content = compressor.compress_html(
+                    response.content.decode("utf-8")
+                )
                 response["Content-Length"] = str(len(response.content))
             except DjangoUnicodeDecodeError:
                 pass

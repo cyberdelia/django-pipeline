@@ -188,6 +188,15 @@ Defaults to ``'pipeline.compressors.yuglify.YuglifyCompressor'``
 
   Please note that in order to use Yuglify compressor, you need to install Yuglify (see :doc:`installation` for more details).
 
+``HTML_COMPRESSOR``
+...................
+
+Compressor class to be applied to HTML responses.
+
+If empty or ``None``, HTML responses won't be compressed.
+
+Defaults to ``'pipeline.compressors.djangohtml.DjangoHtmlCompressor'``
+
 ``TEMPLATE_NAMESPACE``
 ......................
 
