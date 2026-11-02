@@ -1,7 +1,10 @@
+from unittest import mock
+
 from django.template import Context, Template
 from django.test import TestCase
 from jinja2 import Environment, PackageLoader
 
+from pipeline.exceptions import CompilerError
 from pipeline.jinja2 import PipelineExtension
 from tests.utils import pipeline_settings
 
@@ -63,6 +66,34 @@ class JinjaTest(TestCase):
             '<script async defer type="text/javascript" src="/static/scripts_async_defer.js" charset="utf-8"></script>',  # noqa
             template.render(),
         )
+
+    @pipeline_settings(PIPELINE_ENABLED=False, SHOW_ERRORS_INLINE=True)
+    def test_package_css_compiler_error(self):
+        with mock.patch("pipeline.packager.Packager.compile") as mock_compile:
+            mock_compile.side_effect = CompilerError(
+                "CSS compilation failed",
+                command=["fake-sass", "style.scss"],
+                error_output="CSS syntax error",
+            )
+            template = self.env.from_string("""{% stylesheet "screen" %}""")
+            rendered = template.render()
+            self.assertIn("CSS", rendered)
+            self.assertIn("screen", rendered)
+            self.assertIn("CSS syntax error", rendered)
+
+    @pipeline_settings(PIPELINE_ENABLED=False, SHOW_ERRORS_INLINE=True)
+    def test_package_js_compiler_error(self):
+        with mock.patch("pipeline.packager.Packager.compile") as mock_compile:
+            mock_compile.side_effect = CompilerError(
+                "JS compilation failed",
+                command=["fake-coffee", "script.coffee"],
+                error_output="JS compile error",
+            )
+            template = self.env.from_string("""{% javascript "scripts" %}""")
+            rendered = template.render()
+            self.assertIn("JavaScript", rendered)
+            self.assertIn("scripts", rendered)
+            self.assertIn("JS compile error", rendered)
 
 
 class DjangoTest(TestCase):

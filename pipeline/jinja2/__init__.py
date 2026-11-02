@@ -51,6 +51,9 @@ class PipelineExtension(PipelineMixin, Extension):
         tags = [self.render_css(package, path) for path in paths]
         return "\n".join(tags)
 
+    def render_error_css(self, package_name, e):
+        return super().render_error("CSS", package_name, e)
+
     def package_js(self, package_name, *args, **kwargs):
         try:
             package = self.package_for(package_name, "js")
@@ -82,3 +85,6 @@ class PipelineExtension(PipelineMixin, Extension):
         if templates:
             tags.append(self.render_inline(package, templates))
         return "\n".join(tags)
+
+    def render_error_js(self, package_name, e):
+        return super().render_error("JavaScript", package_name, e)
