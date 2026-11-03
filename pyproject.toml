@@ -70,7 +70,7 @@ changelog = "https://github.com/jazzband/django-pipeline/blob/master/HISTORY.rst
 include-package-data = true
 
 [tool.setuptools.packages.find]
-exclude = ["tests", "tests.tests"]
+include = ["pipeline", "pipeline.*"]
 
 [tool.setuptools_scm]
 local_scheme = "dirty-tag"
