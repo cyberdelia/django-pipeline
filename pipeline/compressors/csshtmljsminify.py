@@ -16,3 +16,8 @@ class CssHtmlJsMinifyCompressor(CompressorBase):
         from css_html_js_minify import js_minify  # noqa: PLC0415
 
         return js_minify(js)
+
+    def compress_html(self, html):
+        from css_html_js_minify import html_minify
+
+        return html_minify(html)
