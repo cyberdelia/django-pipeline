@@ -1,1 +1,1 @@
-<script{% if async %} async{% endif %}{% if defer %} defer{% endif %} type="{{ type }}" src="{{ url }}" charset="utf-8"></script>
+<script{% if async %} async{% endif %}{% if defer %} defer{% endif %} type="{{ type }}" src="{{ url }}" charset="utf-8"{% if integrity %} integrity="{{ integrity }}"{% endif %}{% if crossorigin %} crossorigin="{{ crossorigin }}"{% endif %}></script>

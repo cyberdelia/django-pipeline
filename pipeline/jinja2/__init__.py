@@ -42,7 +42,12 @@ class PipelineExtension(PipelineMixin, Extension):
         template_name = package.template_name or "pipeline/css.jinja"
         context = package.extra_context
         context.update(
-            {"type": guess_type(path, "text/css"), "url": staticfiles_storage.url(path)}
+            {
+                "type": guess_type(path, "text/css"),
+                "url": staticfiles_storage.url(path),
+                "crossorigin": package.config.get("crossorigin"),
+                "integrity": package.get_sri(path),
+            }
         )
         template = self.environment.get_template(template_name)
         return template.render(context)
@@ -66,6 +71,8 @@ class PipelineExtension(PipelineMixin, Extension):
             {
                 "type": guess_type(path, "text/javascript"),
                 "url": staticfiles_storage.url(path),
+                "crossorigin": package.config.get("crossorigin"),
+                "integrity": package.get_sri(path),
             }
         )
         template = self.environment.get_template(template_name)

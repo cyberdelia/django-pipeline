@@ -1,3 +1,7 @@
+import base64
+import hashlib
+from functools import lru_cache
+
 from django.contrib.staticfiles.finders import find, get_finders
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.files.base import ContentFile
@@ -60,6 +64,20 @@ class Package:
     @property
     def compiler_options(self):
         return self.config.get("compiler_options", {})
+
+    @lru_cache
+    def get_sri(self, path):
+        method = self.config.get("integrity")
+        if method not in {"sha256", "sha384", "sha512"}:
+            return None
+        if staticfiles_storage.exists(path):
+            with staticfiles_storage.open(path) as fd:
+                h = getattr(hashlib, method)()
+                for data in iter(lambda: fd.read(16384), b""):
+                    h.update(data)
+            digest = base64.b64encode(h.digest()).decode()
+            return f"{method}-{digest}"
+        return None
 
 
 class Packager:

@@ -2,6 +2,8 @@ import glob
 import os
 import shutil
 
+from django.utils import version
+
 
 def local_path(path):
     return os.path.join(os.path.dirname(__file__), path)
@@ -42,7 +44,19 @@ MEDIA_URL = "/media/"
 
 MEDIA_ROOT = local_path("media")
 
-STATICFILES_STORAGE = "pipeline.storage.PipelineStorage"
+django_version = version.get_complete_version()
+if django_version >= (4, 2):
+
+    STORAGES = {
+        "default": {
+            "BACKEND": "pipeline.storage.PipelineStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "pipeline.storage.PipelineStorage",
+        },
+    }
+else:
+    STATICFILES_STORAGE = "pipeline.storage.PipelineStorage"
 STATIC_ROOT = local_path("static/")
 STATIC_URL = "/static/"
 STATICFILES_DIRS = (("pipeline", local_path("assets/")),)
@@ -88,6 +102,42 @@ PIPELINE = {
             "extra_context": {
                 "title": "Default Style",
             },
+        },
+        "screen_crossorigin": {
+            "source_filenames": (
+                "pipeline/css/first.css",
+                "pipeline/css/second.css",
+                "pipeline/css/urls.css",
+            ),
+            "output_filename": "screen_crossorigin.css",
+            "crossorigin": "anonymous",
+        },
+        "screen_sri_sha256": {
+            "source_filenames": (
+                "pipeline/css/first.css",
+                "pipeline/css/second.css",
+                "pipeline/css/urls.css",
+            ),
+            "output_filename": "screen_sri_sha256.css",
+            "integrity": "sha256",
+        },
+        "screen_sri_sha384": {
+            "source_filenames": (
+                "pipeline/css/first.css",
+                "pipeline/css/second.css",
+                "pipeline/css/urls.css",
+            ),
+            "output_filename": "screen_sri_sha384.css",
+            "integrity": "sha384",
+        },
+        "screen_sri_sha512": {
+            "source_filenames": (
+                "pipeline/css/first.css",
+                "pipeline/css/second.css",
+                "pipeline/css/urls.css",
+            ),
+            "output_filename": "screen_sri_sha512.css",
+            "integrity": "sha512",
         },
     },
     "JAVASCRIPT": {
@@ -136,6 +186,46 @@ PIPELINE = {
                 "async": True,
                 "defer": True,
             },
+        },
+        "scripts_crossorigin": {
+            "source_filenames": (
+                "pipeline/js/first.js",
+                "pipeline/js/second.js",
+                "pipeline/js/application.js",
+                "pipeline/templates/**/*.jst",
+            ),
+            "output_filename": "scripts_crossorigin.js",
+            "crossorigin": "anonymous",
+        },
+        "scripts_sri_sha256": {
+            "source_filenames": (
+                "pipeline/js/first.js",
+                "pipeline/js/second.js",
+                "pipeline/js/application.js",
+                "pipeline/templates/**/*.jst",
+            ),
+            "output_filename": "scripts_sha256.js",
+            "integrity": "sha256",
+        },
+        "scripts_sri_sha384": {
+            "source_filenames": (
+                "pipeline/js/first.js",
+                "pipeline/js/second.js",
+                "pipeline/js/application.js",
+                "pipeline/templates/**/*.jst",
+            ),
+            "output_filename": "scripts_sha384.js",
+            "integrity": "sha384",
+        },
+        "scripts_sri_sha512": {
+            "source_filenames": (
+                "pipeline/js/first.js",
+                "pipeline/js/second.js",
+                "pipeline/js/application.js",
+                "pipeline/templates/**/*.jst",
+            ),
+            "output_filename": "scripts_sha512.js",
+            "integrity": "sha512",
         },
     },
 }

@@ -152,6 +152,8 @@ class StylesheetNode(PipelineMixin, template.Node):
             {
                 "type": guess_type(path, "text/css"),
                 "url": mark_safe(staticfiles_storage.url(path)),
+                "crossorigin": package.config.get("crossorigin"),
+                "integrity": package.get_sri(path),
             }
         )
         return render_to_string(template_name, context)
@@ -188,6 +190,8 @@ class JavascriptNode(PipelineMixin, template.Node):
             {
                 "type": guess_type(path, "text/javascript"),
                 "url": mark_safe(staticfiles_storage.url(path)),
+                "crossorigin": package.config.get("crossorigin"),
+                "integrity": package.get_sri(path),
             }
         )
         return render_to_string(template_name, context)
