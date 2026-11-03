@@ -15,9 +15,22 @@ Installation
            'pipeline',
        )
 
-3. Use a pipeline storage for ``STATICFILES_STORAGE`` ::
+3. Use a pipeline storage for static files.
+
+   **For Django < 4.2:**
 
         STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
+
+   **For Django >= 4.2:**
+
+        STORAGES = {
+            'default': {
+                'BACKEND': 'django.core.files.storage.FileSystemStorage',
+            },
+            'staticfiles': {
+                'BACKEND': 'pipeline.storage.PipelineManifestStorage',
+            },
+        }
 
 4. Add the ``PipelineFinder`` to ``STATICFILES_FINDERS`` ::
 

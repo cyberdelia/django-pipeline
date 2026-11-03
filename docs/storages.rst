@@ -8,8 +8,16 @@ Storages
 Using with staticfiles
 ======================
 
-Pipeline is providing a storage for `staticfiles app <https://docs.djangoproject.com/en/dev/howto/static-files/>`_,
-to use it configure ``STATICFILES_STORAGE`` like so ::
+Pipeline is providing a storage for `staticfiles app <https://docs.djangoproject.com/en/dev/howto/static-files/>`_.
+
+.. note::
+
+   ``STATICFILES_STORAGE`` is deprecated in Django 4.2 and removed in Django 5.1.
+   For Django 4.2+, use the ``STORAGES`` setting instead.
+
+**For Django < 4.2:**
+
+Configure ``STATICFILES_STORAGE`` like so ::
 
   STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
 
@@ -25,6 +33,53 @@ without packaging your assets. Useful for production when you don't want to run 
 Also available if you want versioning ::
 
   STATICFILES_STORAGE = 'pipeline.storage.NonPackagingPipelineManifestStorage'
+
+**For Django >= 4.2:**
+
+Configure ``STORAGES`` like so ::
+
+  STORAGES = {
+      'default': {
+          'BACKEND': 'django.core.files.storage.FileSystemStorage',
+      },
+      'staticfiles': {
+          'BACKEND': 'pipeline.storage.PipelineStorage',
+      },
+  }
+
+And if you want versioning use ::
+
+  STORAGES = {
+      'default': {
+          'BACKEND': 'django.core.files.storage.FileSystemStorage',
+      },
+      'staticfiles': {
+          'BACKEND': 'pipeline.storage.PipelineManifestStorage',
+      },
+  }
+
+There is also non-packing storage available, that allows you to run ``collectstatic`` command
+without packaging your assets. Useful for production when you don't want to run compressor or compilers ::
+
+  STORAGES = {
+      'default': {
+          'BACKEND': 'django.core.files.storage.FileSystemStorage',
+      },
+      'staticfiles': {
+          'BACKEND': 'pipeline.storage.NonPackagingPipelineStorage',
+      },
+  }
+
+Also available if you want versioning ::
+
+  STORAGES = {
+      'default': {
+          'BACKEND': 'django.core.files.storage.FileSystemStorage',
+      },
+      'staticfiles': {
+          'BACKEND': 'pipeline.storage.NonPackagingPipelineManifestStorage',
+      },
+  }
 
 If you use staticfiles with ``DEBUG = False`` (i.e. for integration tests
 with `Selenium <http://docs.seleniumhq.org/>`_) you should install the finder

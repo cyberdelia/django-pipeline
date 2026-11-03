@@ -86,9 +86,27 @@ Example
 Collect static
 ==============
 
-Pipeline integrates with staticfiles, you just need to setup ``STATICFILES_STORAGE`` to ::
+Pipeline integrates with staticfiles, you just need to configure the static files storage.
+
+.. note::
+
+   ``STATICFILES_STORAGE`` is deprecated in Django 4.2 and removed in Django 5.1.
+   For Django 4.2+, use the ``STORAGES`` setting instead.
+
+**For Django < 4.2:**
 
     STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+
+**For Django >= 4.2:**
+
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'pipeline.storage.PipelineStorage',
+        },
+    }
 
 Then when you run ``collectstatic`` command, your CSS and your javascripts will be compressed at the same time ::
 
@@ -98,9 +116,22 @@ Cache-busting
 -------------
 
 Pipeline 1.2+ no longer provides its own cache-busting URL support (using e.g. the ``PIPELINE_VERSIONING`` setting) but uses
-Django's built-in staticfiles support for this. To set up cache-busting in conjunction with ``collectstatic`` as above, use ::
+Django's built-in staticfiles support for this. To set up cache-busting in conjunction with ``collectstatic`` as above, use:
+
+**For Django < 4.2:**
 
     STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+**For Django >= 4.2:**
+
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'pipeline.storage.PipelineCachedStorage',
+        },
+    }
 
 This will handle cache-busting just as ``staticfiles``'s built-in ``CachedStaticFilesStorage`` does.
 
